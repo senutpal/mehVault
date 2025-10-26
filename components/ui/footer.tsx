@@ -1,7 +1,7 @@
 export function Footer() {
   return (
-    <footer className="py-6">
-      <div className="container mx-auto px-4 text-start bg-destructive">
+    <footer className="py-4">
+      <div className="container mx-auto px-4 text-center">
         <p className="text-sm text-muted-foreground">
           Designed and Developed by{" "}
           <span className="font-medium text-foreground">Utpal Sen</span>
