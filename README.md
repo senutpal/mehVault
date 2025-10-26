@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# mehVault
+
+A web-based cryptocurrency wallet generator supporting multiple blockchains. Generate secure HD wallets from seed phrases for Solana and Ethereum.
+
+## Features
+
+- Generate BIP39-compliant seed phrases
+- Support for multiple blockchains (Solana & Ethereum)
+-  Hierarchical Deterministic (HD) wallet generation
+- Dark/Light theme support
+- Responsive design
+- Built with Next.js for optimal performance
+
+## Tech Stack
+
+- **Framework:** Next.js 16 with React 19
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Blockchain:** 
+  - Solana Web3.js
+  - Ethers.js (Ethereum)
+- **Crypto:** BIP39, ed25519-hd-key, tweetnacl
 
 ## Getting Started
 
-First, run the development server:
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+git clone https://github.com/senutpal/mehVault.git
+cd mehVault
+
+# Install dependencies
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
+```bash
+pnpm dev
+```
+Open http://localhost:3000 to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
+```bash
+pnpm build
+pnpm start
+```
+## Usage
+1. Select Blockchain: Choose between Solana or Ethereum
+2. Seed Phrase: Generate a new seed phrase or import an existing one
+3. View Wallets: Access your generated wallet addresses and private keys
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Security Warning
+This is a development tool for educational purposes. Never use this in production or for real funds.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Never share your seed phrase or private keys
+Always use hardware wallets for significant amounts
+This application stores sensitive data in browser memory

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
@@ -32,7 +32,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <Toaster />
+          <Toaster className="mr-4" />
         </ThemeProvider>
       </body>
     </html>
