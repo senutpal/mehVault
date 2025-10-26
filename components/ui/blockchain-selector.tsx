@@ -10,7 +10,7 @@ interface BlockchainSelectorProps {
 
 export function BlockchainSelector({ onSelect }: BlockchainSelectorProps) {
   return (
-    <Card className="p-8 md:p-12 space-y-8 border-border/40">
+    <Card className="p-8 md:p-12 space-y-8 border border-muted-foreground/40 ">
       <div className="space-y-4 text-center">
         <h2 className="text-xl md:text-2xl font-semibold tracking-tight">
           mehVault supports multiple blockchains
@@ -20,7 +20,7 @@ export function BlockchainSelector({ onSelect }: BlockchainSelectorProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono">
         <Button
           variant="outline"
           size="lg"
