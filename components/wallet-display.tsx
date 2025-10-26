@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
@@ -32,10 +32,32 @@ export function WalletDisplay({
   onBack,
 }: WalletDisplayProps) {
   const [wallets, setWallets] = useState<Wallet[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    const storedWallets = localStorage.getItem("wallets");
+    if (storedWallets) {
+      try {
+        setWallets(JSON.parse(storedWallets));
+      } catch (error) {
+        console.error("Failed to parse stored wallets:", error);
+      }
+    }
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (wallets.length > 0) {
+      localStorage.setItem("wallets", JSON.stringify(wallets));
+    } else {
+      localStorage.removeItem("wallets");
+    }
+  }, [wallets, isHydrated]);
 
   const handleAddWallet = () => {
     try {
-      const index = wallets.length; 
+      const index = wallets.length;
 
       let newWallet: Wallet;
 
@@ -78,6 +100,7 @@ export function WalletDisplay({
 
   const handleClearWallets = () => {
     setWallets([]);
+    localStorage.removeItem("wallets");
     toast.warning("Wallets Cleared", {
       description: "All wallets have been removed.",
     });

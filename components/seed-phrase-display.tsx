@@ -15,7 +15,6 @@ export function SeedPhraseDisplay({ seedPhrase }: SeedPhraseDisplayProps) {
       description: "Seed phrase copied to clipboard.",
     });
   };
-  console.log(seedPhrase);
 
   const words = seedPhrase.split(" ");
 

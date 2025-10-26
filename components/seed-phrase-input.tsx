@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft } from "lucide-react";
 import type { Blockchain } from "@/app/page";
-import { generateMnemonic } from "bip39";
+import { generateMnemonic, validateMnemonic } from "bip39";
 import { toast } from "sonner";
 
 interface SeedPhraseInputProps {
@@ -23,14 +23,23 @@ export function SeedPhraseInput({
   const [phrase, setPhrase] = useState("");
 
   const handleGenerate = () => {
-    const finalPhrase = phrase.trim() || generateMnemonic();
+    const trimmedPhrase = phrase.trim();
+
+    if (trimmedPhrase && !validateMnemonic(trimmedPhrase)) {
+      toast.error("Invalid recovery phrase", {
+        description: "Please enter a valid BIP39 mnemonic phrase.",
+      });
+      return;
+    }
+
+    const finalPhrase = trimmedPhrase || generateMnemonic();
     onGenerate(finalPhrase);
     setPhrase(finalPhrase);
     toast.success("Wallet is ready");
   };
 
   return (
-    <Card className="p-8 md:p- border border-accent-foreground/40">
+    <Card className="p-8 md:p-12 border border-accent-foreground/40">
       <Button
         variant="ghost"
         size="lg"
