@@ -15,7 +15,7 @@ export function Header() {
   );
 
   return (
-    <header className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/80 border-b border-border/20 shadow-md transition-colors duration-500">
+    <header className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/80 border-b border-accent shadow-md transition-colors duration-500">
       <div className="container mx-auto px-6 py-4 md:py-6 flex items-center justify-between">
         <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground select-none">
           mehVault.
