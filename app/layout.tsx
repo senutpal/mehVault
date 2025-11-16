@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
-const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
 
 export const metadata: Metadata = {
   title: "mehVault - Web3 Wallet",
@@ -19,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={dmSans.className}>
+      <body className={`${dmSans.className} ${geistMono.className}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

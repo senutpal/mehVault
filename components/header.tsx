@@ -8,7 +8,7 @@ import clsx from "clsx";
 
 export function Header() {
   const { theme, setTheme } = useTheme();
-  const router = useRouter();6
+  const router = useRouter();
   const pathname = usePathname();
 
   const mounted = useSyncExternalStore(
