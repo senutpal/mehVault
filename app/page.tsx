@@ -11,39 +11,39 @@ export type Blockchain = "solana" | "ethereum" | null;
 export type AppState = "blockchain-select" | "seed-input" | "wallet-view";
 
 export default function Home() {
-  const [selectedBlockchain, setSelectedBlockchain] =
-    useState<Blockchain>(null);
-  const [appState, setAppState] = useState<AppState>("blockchain-select");
-  const [seedPhrase, setSeedPhrase] = useState<string>("");
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  // Load persisted state on mount
-  useEffect(() => {
-    const storedBlockchain = localStorage.getItem("selectedBlockchain");
-    const storedAppState = localStorage.getItem("appState");
-    const storedSeedPhrase = localStorage.getItem("seedPhrase");
-
-    if (storedBlockchain) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSelectedBlockchain(storedBlockchain as Blockchain);
+  const [selectedBlockchain, setSelectedBlockchain] = useState<Blockchain>(
+    () => {
+      return (
+        typeof window !== "undefined"
+          ? localStorage.getItem("selectedBlockchain")
+          : null
+      ) as Blockchain;
     }
-    if (storedAppState) {
-      setAppState(storedAppState as AppState);
-    }
-    if (storedSeedPhrase) {
-      setSeedPhrase(storedSeedPhrase);
-    }
-    setIsHydrated(true);
-  }, []);
+  );
 
-  // Persist state changes
+  const [appState, setAppState] = useState<AppState>(() => {
+    return (
+      (typeof window !== "undefined"
+        ? (localStorage.getItem("appState") as AppState)
+        : "blockchain-select") || "blockchain-select"
+    );
+  });
+
+  const [seedPhrase, setSeedPhrase] = useState<string>(() => {
+    return (
+      (typeof window !== "undefined"
+        ? localStorage.getItem("seedPhrase")
+        : "") || ""
+    );
+  });
+
+  const isHydrated = typeof window !== "undefined";
   useEffect(() => {
     if (!isHydrated) return;
-    if (selectedBlockchain) {
-      localStorage.setItem("selectedBlockchain", selectedBlockchain);
-    } else {
-      localStorage.removeItem("selectedBlockchain");
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    selectedBlockchain
+      ? localStorage.setItem("selectedBlockchain", selectedBlockchain)
+      : localStorage.removeItem("selectedBlockchain");
   }, [selectedBlockchain, isHydrated]);
 
   useEffect(() => {
@@ -53,11 +53,10 @@ export default function Home() {
 
   useEffect(() => {
     if (!isHydrated) return;
-    if (seedPhrase) {
-      localStorage.setItem("seedPhrase", seedPhrase);
-    } else {
-      localStorage.removeItem("seedPhrase");
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    seedPhrase
+      ? localStorage.setItem("seedPhrase", seedPhrase)
+      : localStorage.removeItem("seedPhrase");
   }, [seedPhrase, isHydrated]);
 
   const handleBlockchainSelect = (blockchain: Blockchain) => {
@@ -74,16 +73,14 @@ export default function Home() {
     setAppState("blockchain-select");
     setSelectedBlockchain(null);
     setSeedPhrase("");
+
     localStorage.removeItem("selectedBlockchain");
     localStorage.removeItem("appState");
     localStorage.removeItem("seedPhrase");
     localStorage.removeItem("wallets");
   };
 
-  // Prevent hydration mismatch
-  if (!isHydrated) {
-    return null;
-  }
+  if (!isHydrated) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
@@ -101,6 +98,7 @@ export default function Home() {
               onBack={handleBack}
             />
           )}
+
           {appState === "wallet-view" && (
             <WalletDisplay
               blockchain={selectedBlockchain!}
