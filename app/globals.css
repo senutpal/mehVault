@@ -40,7 +40,6 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  /* Shadcn Shadows */
   --shadow-2xs: var(--shadow-2xs);
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
@@ -49,6 +48,12 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+}
+body[data-scroll-locked][data-scroll-locked] {
+  overflow: auto !important;
+}
+body[data-scroll-locked] {
+  margin-right: 0 !important;
 }
 
 :root {
@@ -123,7 +128,7 @@
   --accent-foreground: hsl(223.8136 -172.5242% 100%);
   --destructive: hsl(359.9132 100.2494% 67.8807%);
   --destructive-foreground: hsl(0 0% 0%);
-  --border: hsl(223.8136 0% 14.0871%);
+  --border: hsl(0, 0%, 30%);
   --input: hsl(223.8136 0% 19.8916%);
   --ring: hsl(223.8136 0% 64.471%);
   --chart-1: hsl(40.6655 100.2361% 50.9228%);
