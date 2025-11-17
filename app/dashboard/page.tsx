@@ -42,33 +42,46 @@ export default function Dashboard() {
     const walletsData = localStorage.getItem("wallets");
 
     if (walletsData) {
-      const parsed = JSON.parse(walletsData);
-
-      if (parsed.length > 0) {
-        setWallets(parsed);
-        setPublicKey(parsed[0].publicKey);
-        setPrivateKey(parsed[0].privateKey);
+      try {
+        const parsed = JSON.parse(walletsData);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setWallets(parsed);
+          setPublicKey(parsed[0].publicKey);
+          setPrivateKey(parsed[0].privateKey);
+        }
+      } catch (error) {
+        console.error("Failed to parse wallet data:", error);
+        localStorage.removeItem("wallets");
       }
     }
   }, []);
 
   const copyToClipboard = (text: string, label: string) => {
-    navigator.clipboard.writeText(text);
-    toast("Copied!", { description: `${label} copied to clipboard` });
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        toast("Copied!", { description: `${label} copied to clipboard` });
+      })
+      .catch(() => {
+        toast.error("Failed to copy", {
+          description: "Please copy manually",
+        });
+      });
   };
 
   const handleAirdrop = async () => {
-    if (!publicKey || !amount) {
+    const parsedAmount = parseFloat(amount);
+    if (!publicKey || !amount || isNaN(parsedAmount)) {
       toast("Error", {
-        description: "Please enter both public key and amount",
+        description: "Please enter valid Public Key and amount",
       });
       return;
     }
 
     setLoading(true);
     try {
-      const result = await airdropSol(publicKey, parseFloat(amount));
-      if (result.success !== false && result.signature) {
+      const result = await airdropSol(publicKey, parsedAmount);
+      if (result.success === true && result.signature) {
         toast.success("Airdrop Successful!", {
           description: `${amount} SOL sent to your wallet`,
         });
@@ -100,6 +113,7 @@ export default function Dashboard() {
                 <CardDescription>Your wallet credentials</CardDescription>
                 <CardAction>
                   <Select
+                    defaultValue="0"
                     onValueChange={(value) => {
                       const index = Number(value);
                       setPublicKey(wallets[index].publicKey);
@@ -195,7 +209,7 @@ export default function Dashboard() {
                     min="0.1"
                     max="5"
                     step="0.1"
-                    className="mt-1.5 not-[]:font-mono text-sm"
+                    className="mt-1.5 font-mono text-sm"
                   />
                 </div>
 
