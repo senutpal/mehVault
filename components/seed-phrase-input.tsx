@@ -39,7 +39,7 @@ export function SeedPhraseInput({
   };
 
   return (
-    <Card className="p-8 md:p-12 border border-accent-foreground/40">
+    <Card className="p-8 md:p-12 border border-accent-foreground/40 gap-0">
       <Button
         variant="ghost"
         size="lg"
@@ -59,7 +59,7 @@ export function SeedPhraseInput({
             Secret Recovery Phrase
           </p>
           <p className="text-xs text-muted-foreground">
-            Save these words in a safe place.
+            Save these words in a safe place
           </p>
         </div>
 

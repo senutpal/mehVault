@@ -16,7 +16,7 @@ export function BlockchainSelector({ onSelect }: BlockchainSelectorProps) {
           mehVault supports multiple blockchains
         </h2>
         <p className="text-muted-foreground text-sm md:text-base">
-          Choose a blockchain to get started.
+          Choose a blockchain to get started
         </p>
       </div>
 

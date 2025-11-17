@@ -4,11 +4,16 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
-const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"] });
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-dm-sans",
+});
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +29,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={dmSans.className}>
+      <body
+        className={`${dmSans.className} ${geistMono.variable} antialiased `}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
