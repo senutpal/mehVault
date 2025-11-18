@@ -3,6 +3,7 @@ import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { VaultProvider } from "@/components/vault-provider";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -38,7 +39,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <VaultProvider>{children}</VaultProvider>
           <Toaster className="mr-4" />
         </ThemeProvider>
       </body>

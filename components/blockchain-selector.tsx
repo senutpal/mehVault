@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import type { Blockchain } from "@/app/page";
+import type { Blockchain } from "@/lib/crypto";
 
 interface BlockchainSelectorProps {
   onSelect: (blockchain: Blockchain) => void;

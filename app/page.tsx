@@ -5,105 +5,136 @@ import { BlockchainSelector } from "@/components/blockchain-selector";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { useState, useEffect } from "react";
+import { VaultAuth } from "@/components/vault-auth";
+import { useVault } from "@/components/vault-provider";
+import type { Blockchain } from "@/lib/crypto";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 import { WalletDisplay } from "@/components/wallet-display";
 
-export type Blockchain = "solana" | "ethereum" | null;
-export type AppState = "blockchain-select" | "seed-input" | "wallet-view";
+type AppStep = "auth" | "blockchain" | "seed" | "wallet-view";
 
 export default function Home() {
-  const [selectedBlockchain, setSelectedBlockchain] = useState<Blockchain>(
-    () => {
-      return (
-        typeof window !== "undefined"
-          ? localStorage.getItem("selectedBlockchain")
-          : null
-      ) as Blockchain;
+  const [appStep, setAppStep] = useState<AppStep>("auth");
+  const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const [tempBlockchain, setTempBlockchain] = useState<Blockchain>(null);
+  const [tempSeedPhrase, setTempSeedPhrase] = useState<string>("");
+
+  const { isUnlocked, hasVault, isLoading, login, createVault, logout, vault } =
+    useVault();
+  useEffect(() => {
+    if (!isUnlocked) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAppStep("auth");
     }
-  );
-
-  const [appState, setAppState] = useState<AppState>(() => {
-    return (
-      (typeof window !== "undefined"
-        ? (localStorage.getItem("appState") as AppState)
-        : "blockchain-select") || "blockchain-select"
-    );
-  });
-
-  const [seedPhrase, setSeedPhrase] = useState<string>(() => {
-    return (
-      (typeof window !== "undefined"
-        ? localStorage.getItem("seedPhrase")
-        : "") || ""
-    );
-  });
-
-  const isHydrated = typeof window !== "undefined";
-  useEffect(() => {
-    if (!isHydrated) return;
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    selectedBlockchain
-      ? localStorage.setItem("selectedBlockchain", selectedBlockchain)
-      : localStorage.removeItem("selectedBlockchain");
-  }, [selectedBlockchain, isHydrated]);
+  }, [isUnlocked]);
 
   useEffect(() => {
-    if (!isHydrated) return;
-    localStorage.setItem("appState", appState);
-  }, [appState, isHydrated]);
+    if (isUnlocked && appStep === "auth") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAppStep("blockchain");
+    }
+  }, [isUnlocked, appStep]);
 
-  useEffect(() => {
-    if (!isHydrated) return;
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    seedPhrase
-      ? localStorage.setItem("seedPhrase", seedPhrase)
-      : localStorage.removeItem("seedPhrase");
-  }, [seedPhrase, isHydrated]);
+  const handleAuth = async (password: string) => {
+    if (hasVault) {
+      const success = await login(password);
+      if (success) {
+        if (vault && vault.wallets.length > 0) {
+          setAppStep("blockchain");
+          toast.success(
+            "Vault unlocked. Generate more wallets or go to dashboard."
+          );
+        } else {
+          setAppStep("blockchain");
+          toast.success("Vault unlocked. Now select your blockchain.");
+        }
+      }
+    } else {
+      setTempPassword(password);
+      setAppStep("blockchain");
+      toast.success("Password set. Now select your blockchain.");
+    }
+  };
+
+  const handleReset = () => {
+    localStorage.removeItem("mehVault_secure_data");
+    window.location.reload();
+  };
 
   const handleBlockchainSelect = (blockchain: Blockchain) => {
-    setSelectedBlockchain(blockchain);
-    setAppState("seed-input");
+    setTempBlockchain(blockchain);
+    setAppStep("seed");
   };
 
-  const handleGenerateWallet = (phrase: string) => {
-    setSeedPhrase(phrase);
-    setAppState("wallet-view");
+  const handleGenerateWallet = async (phrase: string) => {
+    if (!isUnlocked) {
+      if (!tempPassword || !tempBlockchain) {
+        toast.error("Error creating vault. Please start over.");
+        logout();
+        setAppStep("auth");
+        return;
+      }
+      const success = await createVault(tempPassword, phrase, tempBlockchain);
+      if (success) {
+        setTempSeedPhrase(phrase);
+        setAppStep("wallet-view");
+      } else {
+        toast.error("Failed to create vault. Please try again.");
+      }
+    } else {
+      // Existing user generating additional wallets
+      setTempSeedPhrase(phrase);
+      setTempBlockchain(vault?.blockchain || tempBlockchain);
+      setAppStep("wallet-view");
+    }
   };
 
-  const handleBack = () => {
-    setAppState("blockchain-select");
-    setSelectedBlockchain(null);
-    setSeedPhrase("");
-
-    localStorage.removeItem("selectedBlockchain");
-    localStorage.removeItem("appState");
-    localStorage.removeItem("seedPhrase");
-    localStorage.removeItem("wallets");
+  const handleBackFromSeed = () => {
+    setAppStep("blockchain");
   };
 
-  if (!isHydrated) return null;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-colors duration-300">
       <Header />
       <main className="flex-1 md:mt-28 container mx-auto px-4 py-8 md:py-12 flex items-center justify-center">
         <div className="w-full max-w-2xl">
-          {appState === "blockchain-select" && (
-            <BlockchainSelector onSelect={handleBlockchainSelect} />
-          )}
-
-          {appState === "seed-input" && (
-            <SeedPhraseInput
-              blockchain={selectedBlockchain!}
-              onGenerate={handleGenerateWallet}
-              onBack={handleBack}
+          {appStep === "auth" && !isUnlocked && (
+            <VaultAuth
+              isNewUser={!hasVault}
+              onUnlock={handleAuth}
+              onReset={handleReset}
             />
           )}
 
-          {appState === "wallet-view" && (
+          {appStep === "blockchain" && (
+            <BlockchainSelector onSelect={handleBlockchainSelect} />
+          )}
+
+          {appStep === "seed" && (
+            <SeedPhraseInput
+              blockchain={
+                isUnlocked && vault ? vault.blockchain : tempBlockchain
+              }
+              onGenerate={handleGenerateWallet}
+              onBack={handleBackFromSeed}
+            />
+          )}
+
+          {appStep === "wallet-view" && tempSeedPhrase && (
             <WalletDisplay
-              blockchain={selectedBlockchain!}
-              seedPhrase={seedPhrase}
-              onBack={handleBack}
+              blockchain={
+                isUnlocked && vault ? vault.blockchain : tempBlockchain
+              }
+              seedPhrase={tempSeedPhrase}
             />
           )}
         </div>
