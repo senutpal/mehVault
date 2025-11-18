@@ -94,11 +94,6 @@ export default function Home() {
     setAppStep("blockchain");
   };
 
-  const handleBackFromBlockchain = () => {
-    setAppStep("auth");
-    setTempPassword(null);
-  };
-
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -121,10 +116,7 @@ export default function Home() {
           )}
 
           {appStep === "blockchain" && (
-            <BlockchainSelector
-              onSelect={handleBlockchainSelect}
-              onBack={handleBackFromBlockchain}
-            />
+            <BlockchainSelector onSelect={handleBlockchainSelect} />
           )}
 
           {appStep === "seed" && (

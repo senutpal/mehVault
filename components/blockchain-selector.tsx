@@ -6,7 +6,6 @@ import type { Blockchain } from "@/lib/crypto";
 
 interface BlockchainSelectorProps {
   onSelect: (blockchain: Blockchain) => void;
-  onBack?: () => void;
 }
 
 export function BlockchainSelector({ onSelect }: BlockchainSelectorProps) {
