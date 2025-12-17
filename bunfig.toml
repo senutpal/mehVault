@@ -1,0 +1,18 @@
+# Bun configuration for mehVault
+# @see https://bun.sh/docs/runtime/bunfig
+
+[install]
+# Automatically install peer dependencies
+peer = true
+# Use production dependencies only when NODE_ENV=production
+production = false
+
+[install.lockfile]
+# Save lockfile after install
+save = true
+# Generate yarn.lock for compatibility
+print = "yarn"
+
+[run]
+# Silence lifecycle scripts output
+silent = false

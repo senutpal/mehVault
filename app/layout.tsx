@@ -1,37 +1,61 @@
+/**
+ * @fileoverview Root layout component.
+ * Sets up providers, fonts, and global styles.
+ *
+ * @module app/layout
+ */
+
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider, WalletProvider } from "@/providers";
 import type { Metadata } from "next";
 import { DM_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ui/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { VaultProvider } from "@/components/vault-provider";
+
+// ============================================================================
+// Fonts
+// ============================================================================
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-dm-sans",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-geist-mono",
+  display: "swap",
 });
 
+// ============================================================================
+// Metadata
+// ============================================================================
+
 export const metadata: Metadata = {
-  title: "mehVault - Web3 Wallet",
+  title: "mehVault - Secure Web3 Wallet",
   description:
-    "A minimal and professional Web3 wallet supporting multiple blockchains",
+    "A secure, minimal Web3 wallet supporting Solana and Ethereum. Generate and manage HD wallets.",
+  keywords: ["web3", "wallet", "solana", "ethereum", "crypto", "hd wallet"],
 };
 
-export default function RootLayout({
-  children,
-}: {
+// ============================================================================
+// Layout Component
+// ============================================================================
+
+interface RootLayoutProps {
   children: React.ReactNode;
-}) {
+}
+
+/**
+ * Root layout wrapping all pages with providers and global styles.
+ */
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${dmSans.className} ${geistMono.variable} antialiased `}
+        className={`${dmSans.className} ${geistMono.variable} antialiased min-h-screen bg-background`}
       >
         <ThemeProvider
           attribute="class"
@@ -39,8 +63,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <VaultProvider>{children}</VaultProvider>
-          <Toaster className="mr-4" />
+          <WalletProvider>
+            {children}
+            <Toaster position="bottom-right" />
+          </WalletProvider>
         </ThemeProvider>
       </body>
     </html>
